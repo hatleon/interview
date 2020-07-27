@@ -12,7 +12,7 @@ class TransE(Model):
 		super(TransE, self).__init__(config)
 		self.ent_embeddings = nn.Embedding(self.config.entTotal, self.config.hidden_size)
 		self.rel_embeddings = nn.Embedding(self.config.relTotal, self.config.hidden_size)
-        self.weight_embeddings = nn.Parameter(self.config.hidden_size)
+		self.weight_embeddings = nn.Parameter(self.config.hidden_size)
 		self.criterion = nn.MarginRankingLoss(self.config.margin, False)
 		self.init_weights()
 		
@@ -34,14 +34,14 @@ class TransE(Model):
 		h_pos = self.ent_embeddings(triple_pos[:, 0])  // m*n batch_size为m表示实体数量，n为隐藏层维度大小
 		t_pos = self.ent_embeddings(triple_pos[:, 1])
 		r_pos = self.rel_embeddings(triple_pos[:, 2])
-        weight_pos = self.unsqueeze(self.weight_embeddings, -1)  // 扩充成n*1维
-        weight_pos = torch.matmul(r_pos, weight_pos)  // 矩阵乘得权重大小，结果为m*1维
+		weight_pos = self.unsqueeze(self.weight_embeddings, -1)  // 扩充成n*1维
+		weight_pos = torch.matmul(r_pos, weight_pos)  // 矩阵乘得权重大小，结果为m*1维
 
-        h_neg = self.ent_embeddings(triple_neg[:, 0])
+		h_neg = self.ent_embeddings(triple_neg[:, 0])
 		t_neg = self.ent_embeddings(triple_neg[:, 1])
 		r_neg = self.rel_embeddings(triple_neg[:, 2])
-        weight_neg = self.unsqueeze(self.weight_embeddings, -1)
-        weight_neg = torch.matmul(r_neg, weight_neg)
+		weight_neg = self.unsqueeze(self.weight_embeddings, -1)
+		weight_neg = torch.matmul(r_neg, weight_neg)
 
 		p_score = r_pos + t_pos - weight_pos*h_pos  //数乘 r+t-weight*h
 		n_score = r_neg + t_neg - weight_neg*h_neg
